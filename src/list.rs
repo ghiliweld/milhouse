@@ -482,7 +482,7 @@ where
 
             process_results(
                 bytes
-                    .chunks(<T as Decode>::ssz_fixed_len())
+                    .chunks_exact(<T as Decode>::ssz_fixed_len())
                     .map(T::from_ssz_bytes),
                 |iter| {
                     List::try_from_iter(iter).map_err(|e| {
