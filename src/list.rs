@@ -10,7 +10,6 @@ use crate::utils::{arb_arc, compute_level, int_log, opt_packing_depth, updated_l
 use crate::{Arc, Cow, Error, Tree, UpdateMap, Value};
 use arbitrary::Arbitrary;
 use derivative::Derivative;
-use itertools::process_results;
 use serde::{ser::SerializeSeq, Deserialize, Deserializer, Serialize, Serializer};
 use ssz::{Decode, Encode, SszEncoder, TryFromIter, BYTES_PER_LENGTH_OFFSET};
 use std::collections::BTreeMap;
@@ -480,16 +479,25 @@ where
                 )));
             }
 
-            process_results(
-                bytes
-                    .chunks(<T as Decode>::ssz_fixed_len())
-                    .map(T::from_ssz_bytes),
-                |iter| {
-                    List::try_from_iter(iter).map_err(|e| {
-                        ssz::DecodeError::BytesInvalid(format!("Error building ssz List: {:?}", e))
-                    })
-                },
-            )?
+            // use map_while to return an iterator that yields items of type T
+            // until a decoded output returns an error
+            let iter = bytes
+                .chunks(<T as Decode>::ssz_fixed_len())
+                .map_while(|chunk| T::from_ssz_bytes(chunk).ok());
+            List::try_from_iter(iter).map_err(|e| {
+                ssz::DecodeError::BytesInvalid(format!("Error building ssz List: {:?}", e))
+            })
+
+            // process_results(
+            //     bytes
+            //         .chunks(<T as Decode>::ssz_fixed_len())
+            //         .map(T::from_ssz_bytes),
+            //     |iter| {
+            //         List::try_from_iter(iter).map_err(|e| {
+            //             ssz::DecodeError::BytesInvalid(format!("Error building ssz List: {:?}", e))
+            //         })
+            //     },
+            // )?
         } else {
             ssz::decode_list_of_variable_length_items(bytes, Some(max_len))
         }
