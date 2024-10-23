@@ -295,7 +295,7 @@ impl<'a, T: Value, N: Unsigned, U: UpdateMap<T>> IntoIterator for &'a Vector<T, 
 }
 
 // FIXME: duplicated from `ssz::encode::impl_for_vec`
-impl<T: Value, N: Unsigned> Encode for Vector<T, N> {
+impl<T: Value + Encode, N: Unsigned> Encode for Vector<T, N> {
     fn is_ssz_fixed_len() -> bool {
         <T as Encode>::is_ssz_fixed_len()
     }
@@ -337,7 +337,7 @@ impl<T: Value, N: Unsigned> Encode for Vector<T, N> {
     }
 }
 
-impl<T: Value, N: Unsigned> Decode for Vector<T, N> {
+impl<T: Value + Decode, N: Unsigned> Decode for Vector<T, N> {
     fn is_ssz_fixed_len() -> bool {
         <T as Decode>::is_ssz_fixed_len()
     }

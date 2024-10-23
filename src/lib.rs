@@ -41,13 +41,13 @@ pub const MAX_TREE_DEPTH: usize = u64::BITS as usize - 1;
 pub const MAX_TREE_LENGTH: usize = 1 << MAX_TREE_DEPTH;
 
 #[cfg(feature = "debug")]
-pub trait Value: Encode + Decode + TreeHash + PartialEq + Clone + std::fmt::Debug {}
+pub trait Value: TreeHash + PartialEq + Clone + std::fmt::Debug {}
 
 #[cfg(feature = "debug")]
-impl<T> Value for T where T: Encode + Decode + TreeHash + PartialEq + Clone + std::fmt::Debug {}
+impl<T> Value for T where T: TreeHash + PartialEq + Clone + std::fmt::Debug {}
 
 #[cfg(not(feature = "debug"))]
-pub trait Value: Encode + Decode + TreeHash + PartialEq + Clone {}
+pub trait Value: TreeHash + PartialEq + Clone {}
 
 #[cfg(not(feature = "debug"))]
-impl<T> Value for T where T: Encode + Decode + TreeHash + PartialEq + Clone {}
+impl<T> Value for T where T: TreeHash + PartialEq + Clone {}

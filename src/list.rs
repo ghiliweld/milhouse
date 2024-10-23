@@ -404,7 +404,7 @@ where
 }
 
 // FIXME: duplicated from `ssz::encode::impl_for_vec`
-impl<T: Value, N: Unsigned> Encode for List<T, N> {
+impl<T: Value + Encode, N: Unsigned> Encode for List<T, N> {
     fn is_ssz_fixed_len() -> bool {
         false
     }
@@ -455,7 +455,7 @@ where
 
 impl<T, N> Decode for List<T, N>
 where
-    T: Value,
+    T: Value + Decode,
     N: Unsigned,
 {
     fn is_ssz_fixed_len() -> bool {
