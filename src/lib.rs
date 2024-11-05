@@ -30,7 +30,6 @@ pub use triomphe::Arc;
 pub use update_map::UpdateMap;
 pub use vector::Vector;
 
-use ssz::{Decode, Encode};
 use tree_hash::TreeHash;
 
 /// Maximum depth for a tree.
